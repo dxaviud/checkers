@@ -1,3 +1,3 @@
 # checkers
 
-Simple checkers game made in Java.
+Simple checkers game made in C++.
