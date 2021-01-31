@@ -78,7 +78,7 @@ void display_board()
         std::cout << std::endl;
     }
 
-    std::cout << left_padding << "Player turn: " << get_player_turn() << "\n" << std::endl;
+    std::cout << "    " << "Player turn: " << get_player_turn() << "\n" << std::endl;
 
     std::cout << left_padding;
     for (int i = 0; i < 15; i++) {
@@ -190,27 +190,27 @@ void input()
 
     while (true)
     {
-        std::cout << "pick piece to move using 'x-pos y-pos': ";
+        std::cout << "    pick piece to move using 'x-pos y-pos': ";
         std::cin >> x1 >> y1;
         if (std::cin.fail())
         {
-            std::cout << "invalid input, try again" << std::endl;
+            std::cout << "    invalid input, try again" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             continue;
         }
         if (out_of_bounds(x1, y1))
         {
-            std::cout << "out of bounds, try again" << std::endl;
+            std::cout << "    out of bounds, try again" << std::endl;
             continue;
         }
         if (board[y1][x1].color != player_turn) {
-            std::cout << "invalid piece chosen, try again" << std::endl;
+            std::cout << "    invalid piece chosen, try again" << std::endl;
             continue;
         }
         if (!has_legal_move(x1, y1))
         {
-            std::cout << "this piece has no legal moves, try again" << std::endl;
+            std::cout << "    this piece has no legal moves, try again" << std::endl;
             continue;
         }
         break;
@@ -220,18 +220,18 @@ void input()
 
     while(!validSecond)
     {
-        std::cout << "enter where to move using 'x-pos y-pos': ";
+        std::cout << "    enter where to move using 'x-pos y-pos': ";
         std::cin >> x2 >> y2;
         if (std::cin.fail())
         {
-            std::cout << "invalid input, try again" << std::endl;
+            std::cout << "    invalid input, try again" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             continue;
         }
         if (out_of_bounds(x2, y2))
         {
-            std::cout << "out of bounds, try again" << std::endl;
+            std::cout << "    out of bounds, try again" << std::endl;
             continue;
         }
         if (board[y1][x1].type == king)
@@ -249,7 +249,7 @@ void input()
                     (x2 + 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 + 1].color == other_player()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == other_player()));
         }
         if (!validSecond)
-            std::cout << "Invalid move to position, try again" << std::endl;
+            std::cout << "    invalid move to position, try again" << std::endl;
     }
 
     move(x1, y1, x2, y2);
@@ -418,7 +418,7 @@ int main()
 
     if (gameover)
     {
-        std::cout << "game over! " << get_player_turn() << " wins!";
+        std::cout << "    game over! " << get_player_turn() << " wins!";
     }
 
 }
