@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <Windows.h>
 
@@ -9,7 +8,6 @@ enum PieceType {none, man, king};
 enum PieceColor {no, black, white};
 
 PieceColor playerTurn = white;
-
 
 class Piece
 {
@@ -33,12 +31,9 @@ public:
     {
         type = king;
     }
-    
 };
 
-
 Piece board[8][8];
-
 
 char getPieceChar(PieceType t, PieceColor c)
 {
@@ -95,7 +90,7 @@ void display()
     std::cout << std::endl;
 }
 
-void init()
+void initialize_board()
 {
     //initialize the board
     for (int y = 0; y < 8; y++)
@@ -132,30 +127,6 @@ void init()
 
 void move(int x1, int y1, int x2, int y2)
 {
-#if 0
-    if (board[y1][x1].type == none)
-    {
-        std::cout << "invalid piece selected for movement." << std::endl;
-        std::cin.get();
-        return;
-    }
-
-    
-    if (   !(    (x2 + 1 == x1 && y2 + 1 == y1) || (x2 + 1 == x1 && y2 - 1 == y1) || (x2 - 1 == x1 && y2 + 1 == y1) || (x2 - 1 == x1 && y2 - 1 == y1) ||
-        (x2 + 2 == x1 && y2 + 2 == y1) || (x2 + 2 == x1 && y2 - 2 == y1) || (x2 - 2 == x1 && y2 + 2 == y1) || (x2 - 2 == x1 && y2 - 2 == y1)   )  )
-    {
-        std::cout << "can't move to that location." << std::endl;
-        std::cin.get();
-        return;
-    }
-    if (!(board[y2][x2].type == none))
-    {
-        std::cout << "position to move to is occupied." << std::endl;
-        std::cin.get();
-        return;
-    }
-
-#endif
     board[y2][x2] = board[y1][x1];
     board[y2][x2].setXY(x2, y2);
     board[y1][x1].die();
@@ -439,7 +410,7 @@ void logic()
 
 int main()
 {
-    init();
+    initialize_board();
 
     while (!quit)
     {
