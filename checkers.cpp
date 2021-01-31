@@ -70,25 +70,53 @@ void display_board()
 {
     system("cls");
 
-    std::cout << "Player turn: " << get_player_turn() << "\n" << std::endl;
+    std::string left_padding = "     ";
+    int top_padding = 3;
+    int bottom_padding = 2;
+
+    for (int i = 0; i < top_padding; i++) {
+        std::cout << std::endl;
+    }
+
+    std::cout << left_padding << "Player turn: " << get_player_turn() << "\n" << std::endl;
+
+    std::cout << left_padding;
+    for (int i = 0; i < 15; i++) {
+        std::cout << '_';
+    }
+    std::cout << std::endl;
     
     for (int y = 0; y < 8; y++)
     {
+        std::cout << "    |";
         for (int x = 0; x < 9; x++)
         {
             if (x == 8)
-                std::cout << y;
+                std::cout << "|  " << y;
+            else if (x == 7) 
+                std::cout << get_piece_char(board[y][x].type, board[y][x].color);
             else
                 std::cout << get_piece_char(board[y][x].type, board[y][x].color) << ' ';
         }
         std::cout << std::endl;
     }
-    // std::cout << std::endl;
+
+    std::cout << left_padding;
+    for (int i = 0; i < 15; i++) {
+        std::cout << '`';
+    }
+
+    std::cout << std::endl << left_padding;
     for (int x = 0; x < 8; x++)
     {
         std::cout << x << " ";
     }
     std::cout << std::endl;
+
+    for (int i = 0; i < bottom_padding; i++) {
+        std::cout << std::endl;
+    }
+    
 }
 
 void initialize_board()
