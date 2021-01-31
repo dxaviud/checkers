@@ -3,12 +3,12 @@
 #include <string>
 
 bool quit = false;
-bool gameOver = false;
+bool gameover = false;
 
 enum PieceType {none, man, king};
 enum PieceColor {no, black, white};
 
-PieceColor playerTurn = white;
+PieceColor player_turn = white;
 
 class Piece
 {
@@ -60,7 +60,7 @@ char get_piece_char(PieceType t, PieceColor c)
 
 std::string get_player_turn()
 {
-    if (playerTurn == white)
+    if (player_turn == white)
         return "white (O or 0)";
     else
         return "black (G or @)";
@@ -145,7 +145,7 @@ void move(int xFrom, int yFrom, int xTo, int yTo)
 
 PieceColor other_player()
 {
-    if (playerTurn == white)
+    if (player_turn == white)
         return black;
     else
         return white;
@@ -177,7 +177,7 @@ void input()
             std::cout << "out of bounds, try again" << std::endl;
             continue;
         }
-        if (board[y1][x1].color != playerTurn) {
+        if (board[y1][x1].color != player_turn) {
             std::cout << "invalid piece chosen, try again" << std::endl;
             continue;
         }
@@ -243,21 +243,21 @@ void input()
     move(x1, y1, x2, y2);
 }
 
-void switchPlayerTurn()
+void switch_player_turn()
 {
-    if (playerTurn == white)
-        playerTurn = black;
+    if (player_turn == white)
+        player_turn = black;
     else
-        playerTurn = white;
+        player_turn = white;
 }
 
-bool noMorePieces()
+bool no_more_pieces()
 {
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
         {
-            if (board[y][x].color == playerTurn)
+            if (board[y][x].color == player_turn)
                 return false;
         }
     }
@@ -366,7 +366,7 @@ bool has_legal_move(int x, int y)
     }
 }
 
-bool noMoreMoves()
+bool no_more_moves()
 {
     //iterate over all pieces of the correct color
     //if that piece has any legal move, return false
@@ -375,7 +375,7 @@ bool noMoreMoves()
     {
         for (int x = 0; x < 8; x++)
         {
-            if (board[y][x].color == playerTurn && has_legal_move(x, y))
+            if (board[y][x].color == player_turn && has_legal_move(x, y))
                 return false;
         }
     }
@@ -386,10 +386,10 @@ bool noMoreMoves()
 void logic()
 {
     //check for game over
-    if (noMorePieces())
-        gameOver = true;
-    else if (noMoreMoves())
-        gameOver = true;
+    if (no_more_pieces())
+        gameover = true;
+    else if (no_more_moves())
+        gameover = true;
 }
 
 
@@ -401,15 +401,15 @@ int main()
     {
         display_board();
         logic();
-        if (gameOver)
+        if (gameover)
             break;
         input();
-        switchPlayerTurn();
+        switch_player_turn();
     }
 
-    switchPlayerTurn();
+    switch_player_turn();
 
-    if (gameOver)
+    if (gameover)
     {
         std::cout << "game over! " << get_player_turn() << " wins!";
     }
