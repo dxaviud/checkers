@@ -161,9 +161,7 @@ void input()
 {
     int x1, y1, x2, y2;
 
-    bool validFirst = false;
-
-    while (!validFirst)
+    while (true)
     {
         std::cout << "pick piece to move using 'x-pos y-pos': ";
         std::cin >> x1 >> y1;
@@ -179,29 +177,16 @@ void input()
             std::cout << "out of bounds, try again" << std::endl;
             continue;
         }
-
-        // std::cout << "enter y1:";
-        // std::cin >> y1;
-        // if (std::cin.fail())
-        // {
-        //     std::cout << "invalid input, try again" << std::endl;
-        //     std::cin.clear();
-        //     std::cin.ignore(1000, '\n');
-        //     continue;
-        // }
-        // if (y1 < 0 || y1 > 7)
-        // {
-        //     std::cout << "out of bounds, try again" << std::endl;
-        //     continue;
-        // }
+        if (board[y1][x1].color != playerTurn) {
+            std::cout << "invalid piece chosen, try again" << std::endl;
+            continue;
+        }
         if (!has_legal_move(x1, y1))
         {
             std::cout << "this piece has no legal moves, try again" << std::endl;
             continue;
         }
-        validFirst = board[y1][x1].color == playerTurn;
-        if (!validFirst)
-            std::cout << "Invalid piece chosen, try again" << std::endl;
+        break;
     }
 
     bool validSecond = false;
