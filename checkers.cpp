@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include <string>
 
 bool quit = false;
 bool gameOver = false;
@@ -35,7 +36,7 @@ public:
 
 Piece board[8][8];
 
-char getPieceChar(PieceType t, PieceColor c)
+char get_piece_char(PieceType t, PieceColor c)
 {
     if (c == black)
     {
@@ -57,19 +58,19 @@ char getPieceChar(PieceType t, PieceColor c)
     }
 }
 
-const char* getPlayerTurnString()
+std::string get_player_turn()
 {
     if (playerTurn == white)
-        return "white";
+        return "white (O or 0)";
     else
-        return "black";
+        return "black (G or @)";
 }
 
-void display()
+void display_board()
 {
     system("cls");
 
-    std::cout << "Player turn: " << getPlayerTurnString() << "\n" << std::endl;
+    std::cout << "Player turn: " << get_player_turn() << "\n" << std::endl;
     
     for (int y = 0; y < 8; y++)
     {
@@ -78,11 +79,11 @@ void display()
             if (x == 8)
                 std::cout << y;
             else
-                std::cout << getPieceChar(board[y][x].type, board[y][x].color) << ' ';
+                std::cout << get_piece_char(board[y][x].type, board[y][x].color) << ' ';
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
     for (int x = 0; x < 8; x++)
     {
         std::cout << x << " ";
@@ -125,27 +126,24 @@ void initialize_board()
     }
 }
 
-void move(int x1, int y1, int x2, int y2)
+void move(int xFrom, int yFrom, int xTo, int yTo)
 {
-    board[y2][x2] = board[y1][x1];
-    board[y2][x2].setXY(x2, y2);
-    board[y1][x1].die();
+    board[yTo][xTo] = board[yFrom][xFrom];
+    board[yTo][xTo].setXY(xTo, yTo);
+    board[yFrom][xFrom].die();
 
-    if (board[y2][x2].color == white && y2 == 0)
-        board[y2][x2].promote();
-    else if (board[y2][x2].color == black && y2 == 7)
-        board[y2][x2].promote();
+    if (board[yTo][xTo].color == white && yTo == 0)
+        board[yTo][xTo].promote();
+    else if (board[yTo][xTo].color == black && yTo == 7)
+        board[yTo][xTo].promote();
 
-    if (x2 > x1 + 1 || x2 < x1 - 1 || y2 > y1 + 1 || y2 < y1 - 1)
+    if (xTo > xFrom + 1 || xTo < xFrom - 1 || yTo > yFrom + 1 || yTo < yFrom - 1)
     {
-        board[(y1 + y2) / 2][(x1 + x2) / 2].die();
+        board[(yFrom + yTo) / 2][(xFrom + xTo) / 2].die();
     }                            
-    
-        
-
 }
 
-PieceColor otherColor()
+PieceColor other_player()
 {
     if (playerTurn == white)
         return black;
@@ -153,7 +151,11 @@ PieceColor otherColor()
         return white;
 }
 
-bool hasLegalMove(int, int);
+bool has_legal_move(int, int);
+
+bool out_of_bounds(int x, int y) {
+    return (x < 0 || x > 7 || y < 0 || y > 7);
+}
 
 void input()
 {
@@ -163,8 +165,8 @@ void input()
 
     while (!validFirst)
     {
-        std::cout << "enter x1:";
-        std::cin >> x1;
+        std::cout << "pick piece to move using 'x-pos y-pos': ";
+        std::cin >> x1 >> y1;
         if (std::cin.fail())
         {
             std::cout << "invalid input, try again" << std::endl;
@@ -172,27 +174,27 @@ void input()
             std::cin.ignore(1000, '\n');
             continue;
         }
-        if (x1 < 0 || x1 > 7)
+        if (out_of_bounds(x1, y1))
         {
             std::cout << "out of bounds, try again" << std::endl;
             continue;
         }
 
-        std::cout << "enter y1:";
-        std::cin >> y1;
-        if (std::cin.fail())
-        {
-            std::cout << "invalid input, try again" << std::endl;
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            continue;
-        }
-        if (y1 < 0 || y1 > 7)
-        {
-            std::cout << "out of bounds, try again" << std::endl;
-            continue;
-        }
-        if (!hasLegalMove(x1, y1))
+        // std::cout << "enter y1:";
+        // std::cin >> y1;
+        // if (std::cin.fail())
+        // {
+        //     std::cout << "invalid input, try again" << std::endl;
+        //     std::cin.clear();
+        //     std::cin.ignore(1000, '\n');
+        //     continue;
+        // }
+        // if (y1 < 0 || y1 > 7)
+        // {
+        //     std::cout << "out of bounds, try again" << std::endl;
+        //     continue;
+        // }
+        if (!has_legal_move(x1, y1))
         {
             std::cout << "this piece has no legal moves, try again" << std::endl;
             continue;
@@ -206,8 +208,8 @@ void input()
 
     while(!validSecond)
     {
-        std::cout << "enter x2:";
-        std::cin >> x2;
+        std::cout << "enter where to move using 'x-pos y-pos': ";
+        std::cin >> x2 >> y2;
         if (std::cin.fail())
         {
             std::cout << "invalid input, try again" << std::endl;
@@ -215,38 +217,38 @@ void input()
             std::cin.ignore(1000, '\n');
             continue;
         }
-        if (x2 < 0 || x2 > 7)
+        if (out_of_bounds(x2, y2))
         {
             std::cout << "out of bounds, try again" << std::endl;
             continue;
         }
-        std::cout << "enter y2:";
-        std::cin >> y2;
-        if (std::cin.fail())
-        {
-            std::cout << "invalid input, try again" << std::endl;
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            continue;
-        }
-        if (y2 < 0 || y2 > 7)
-        {
-            std::cout << "out of bounds, try again" << std::endl;
-            continue;
-        }
+        // std::cout << "enter y2:";
+        // std::cin >> y2;
+        // if (std::cin.fail())
+        // {
+        //     std::cout << "invalid input, try again" << std::endl;
+        //     std::cin.clear();
+        //     std::cin.ignore(1000, '\n');
+        //     continue;
+        // }
+        // if (y2 < 0 || y2 > 7)
+        // {
+        //     std::cout << "out of bounds, try again" << std::endl;
+        //     continue;
+        // }
         if (board[y1][x1].type == king)
         {
             validSecond = (board[y2][x2].type == none) && ((x2 + 1 == x1 && y2 + 1 == y1) || (x2 + 1 == x1 && y2 - 1 == y1) || (x2 - 1 == x1 && y2 + 1 == y1) || (x2 - 1 == x1 && y2 - 1 == y1) ||
-                (x2 + 2 == x1 && y2 + 2 == y1 && board[y2+1][x2+1].color == otherColor()) || (x2 + 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 + 1].color == otherColor()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == otherColor()) || (x2 - 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 - 1].color == otherColor()));
+                (x2 + 2 == x1 && y2 + 2 == y1 && board[y2+1][x2+1].color == other_player()) || (x2 + 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 + 1].color == other_player()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == other_player()) || (x2 - 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 - 1].color == other_player()));
         }
         else if (board[y1][x1].type == man)
         {
             if (board[y1][x1].color == black)
                 validSecond = (board[y2][x2].type == none) && ((x2 + 1 == x1 && y2 - 1 == y1) || (x2 - 1 == x1 && y2 - 1 == y1) ||
-                    (x2 + 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 + 1].color == otherColor()) || (x2 - 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 - 1].color == otherColor()));
+                    (x2 + 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 + 1].color == other_player()) || (x2 - 2 == x1 && y2 - 2 == y1 && board[y2 - 1][x2 - 1].color == other_player()));
             else if (board[y1][x1].color == white)
                 validSecond = (board[y2][x2].type == none) && ((x2 + 1 == x1 && y2 + 1 == y1) || (x2 - 1 == x1 && y2 + 1 == y1) ||
-                    (x2 + 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 + 1].color == otherColor()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == otherColor()));
+                    (x2 + 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 + 1].color == other_player()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == other_player()));
         }
         
         if (!validSecond)
@@ -277,7 +279,7 @@ bool noMorePieces()
     return true;
 }
 
-bool hasLegalMove(int x, int y)
+bool has_legal_move(int x, int y)
 {
     if (board[y][x].type == none)
         return false;
@@ -300,7 +302,7 @@ bool hasLegalMove(int x, int y)
                 {
                     if (abs(yy - y) == 2)
                     {
-                        if (board[(yy + y) / 2][(xx + x) / 2].color == otherColor())
+                        if (board[(yy + y) / 2][(xx + x) / 2].color == other_player())
                             return true;
                         else
                             continue;
@@ -333,7 +335,7 @@ bool hasLegalMove(int x, int y)
                     {
                         if (abs(yy - y) == 2)
                         {
-                            if (board[(yy + y) / 2][(xx + x) / 2].color == otherColor())
+                            if (board[(yy + y) / 2][(xx + x) / 2].color == other_player())
                                 return true;
                             else
                                 continue;
@@ -364,7 +366,7 @@ bool hasLegalMove(int x, int y)
                     {
                         if (abs(yy - y) == 2)
                         {
-                            if (board[(yy + y) / 2][(xx + x) / 2].color == otherColor())
+                            if (board[(yy + y) / 2][(xx + x) / 2].color == other_player())
                                 return true;
                             else
                                 continue;
@@ -377,8 +379,6 @@ bool hasLegalMove(int x, int y)
             return false;
         }
     }
-
-
 }
 
 bool noMoreMoves()
@@ -390,7 +390,7 @@ bool noMoreMoves()
     {
         for (int x = 0; x < 8; x++)
         {
-            if (board[y][x].color == playerTurn && hasLegalMove(x, y))
+            if (board[y][x].color == playerTurn && has_legal_move(x, y))
                 return false;
         }
     }
@@ -414,7 +414,7 @@ int main()
 
     while (!quit)
     {
-        display();
+        display_board();
         logic();
         if (gameOver)
             break;
@@ -426,7 +426,7 @@ int main()
 
     if (gameOver)
     {
-        std::cout << "game over! " << getPlayerTurnString() << " wins!";
+        std::cout << "game over! " << get_player_turn() << " wins!";
     }
 
 }
