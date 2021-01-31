@@ -93,7 +93,6 @@ void display_board()
 
 void initialize_board()
 {
-    //initialize the board
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
@@ -207,20 +206,6 @@ void input()
             std::cout << "out of bounds, try again" << std::endl;
             continue;
         }
-        // std::cout << "enter y2:";
-        // std::cin >> y2;
-        // if (std::cin.fail())
-        // {
-        //     std::cout << "invalid input, try again" << std::endl;
-        //     std::cin.clear();
-        //     std::cin.ignore(1000, '\n');
-        //     continue;
-        // }
-        // if (y2 < 0 || y2 > 7)
-        // {
-        //     std::cout << "out of bounds, try again" << std::endl;
-        //     continue;
-        // }
         if (board[y1][x1].type == king)
         {
             validSecond = (board[y2][x2].type == none) && ((x2 + 1 == x1 && y2 + 1 == y1) || (x2 + 1 == x1 && y2 - 1 == y1) || (x2 - 1 == x1 && y2 + 1 == y1) || (x2 - 1 == x1 && y2 - 1 == y1) ||
@@ -235,7 +220,6 @@ void input()
                 validSecond = (board[y2][x2].type == none) && ((x2 + 1 == x1 && y2 + 1 == y1) || (x2 - 1 == x1 && y2 + 1 == y1) ||
                     (x2 + 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 + 1].color == other_player()) || (x2 - 2 == x1 && y2 + 2 == y1 && board[y2 + 1][x2 - 1].color == other_player()));
         }
-        
         if (!validSecond)
             std::cout << "Invalid move to position, try again" << std::endl;
     }
@@ -368,9 +352,6 @@ bool has_legal_move(int x, int y)
 
 bool no_more_moves()
 {
-    //iterate over all pieces of the correct color
-    //if that piece has any legal move, return false
-    //after iterating over all pieces, return true
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
@@ -385,13 +366,11 @@ bool no_more_moves()
 
 void logic()
 {
-    //check for game over
     if (no_more_pieces())
         gameover = true;
     else if (no_more_moves())
         gameover = true;
 }
-
 
 int main()
 {
