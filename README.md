@@ -1,7 +1,7 @@
 # checkers
 
 ## About
-This is my implementation of Checkers. It is console based.  
+My implementation of Checkers.
 
 ![checkers1](https://dxaviud.github.io/images/checkers1.PNG)
 
